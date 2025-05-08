@@ -1,15 +1,14 @@
 import {pgTable, varchar, pgSchema, uuid, text} from 'drizzle-orm/pg-core'
 import { columnId, createdAt, updatedAt } from './utils'  
 import { relations } from 'drizzle-orm';
-import { nanoid } from 'nanoid';
 
-export const users = pgTable('users', {
-    id: columnId,
-    name: varchar('name', {length: 255}).notNull(),
-    email: varchar('email', {length: 255}).notNull().unique(),
-    createdAt,
-    updatedAt
-})
+// export const users = pgTable('users', {
+//     id: columnId,
+//     name: varchar('name', {length: 255}).notNull(),
+//     email: varchar('email', {length: 255}).notNull().unique(),
+//     createdAt,
+//     updatedAt
+// })
 
 export const workspaces = pgTable('workspaces', {
     id: columnId,

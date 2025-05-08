@@ -44,7 +44,10 @@ export const usersRouter = router({
 
         const result = await db
           .insert(users)
-          .values(input)
+          .values({
+            name:input.name,
+            email: input.email
+          })
           .returning();
 
         return result[0];

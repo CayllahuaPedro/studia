@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 export const columnId = uuid("id")
   .notNull()
   .primaryKey()
+  .defaultRandom();
 
 export const createdAt =  timestamp('created_at', {
   withTimezone: true,

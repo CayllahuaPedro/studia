@@ -10,12 +10,14 @@ create table users (
   -- The customer's billing address, stored in JSON format.
   billing_address jsonb,
   -- Stores your customer's payment instruments.
+  updated_at timestamp with time zone,
   payment_method jsonb
+  email text,
 );
 alter table users
   enable row level security;
-create policy "Can view own user data." on users
-  for select using ((select auth.uid()) = id);
+create policy "Everyone view own user data." on users
+  for select using (true);
 create policy "Can update own user data." on users
   for update using ((select auth.uid()) = id);
 
@@ -27,8 +29,8 @@ returns trigger
 set search_path = ''
 as $$
   begin
-    insert into public.users (id, full_name, avatar_url)
-    values (new.id, new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'avatar_url');
+    insert into public.users (id, full_name, avatar_url, email)
+    values (new.id, new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'avatar_url', new.email);
     return new;
   end;
 $$
