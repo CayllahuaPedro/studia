@@ -7,8 +7,15 @@ export const columnId = varchar("id", { length: 255 })
   .primaryKey()
   .$default(() => nanoid());
 
-export const createdAt = timestamp("created_at")
-  .notNull().defaultNow()
+export const createdAt =  timestamp('created_at', {
+  withTimezone: true,
+  mode: 'string',
+})
+  .defaultNow()
+  .notNull()
 
-export const updatedAt = timestamp("updated_at")
-  .notNull().defaultNow()
+export const updatedAt = timestamp("updated_at", {
+  withTimezone: true,
+  mode: 'string',
+})
+  .defaultNow()

@@ -8,6 +8,13 @@
       "when": 1746141130094,
       "tag": "0000_strong_the_stranger",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1746732281818,
+      "tag": "0001_silent_khan",
+      "breakpoints": true
     }
   ]
 }
