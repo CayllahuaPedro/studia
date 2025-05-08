@@ -1,3 +1,4 @@
+"use client"
 import { AppSidebar } from "@/components/app-sidebar";
 import { NavActions } from "@/components/nav-actions";
 import {
@@ -18,18 +19,24 @@ import { useState } from "react";
 export default function Page() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const { data: users, refetch } = api.users.getAll.useQuery();
   const createUser = api.users.create.useMutation({
     onSuccess: () => {
       setName("");
       setEmail("");
+      setError(null);
       refetch();
+    },
+    onError: (error) => {
+      setError(error.message);
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     createUser.mutate({ name, email });
   };
   return (
@@ -89,6 +96,11 @@ export default function Page() {
                 required
               />
             </div>
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+                {error}
+              </div>
+            )}
             <button
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded"
