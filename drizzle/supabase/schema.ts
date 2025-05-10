@@ -1,9 +1,5 @@
 import { pgTable, uuid, timestamp, text, foreignKey, pgPolicy, jsonb, boolean, check, bigint, integer, pgEnum } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
-import { columnId, createdAt, updatedAt } from './utils'  
-import { relations } from 'drizzle-orm';
-
-// stripe + auth flow 
 
 export const pricingPlanInterval = pgEnum("pricing_plan_interval", ['day', 'week', 'month', 'year'])
 export const pricingType = pgEnum("pricing_type", ['one_time', 'recurring'])
@@ -11,7 +7,7 @@ export const subscriptionStatus = pgEnum("subscription_status", ['trialing', 'ac
 
 
 export const workspaces = pgTable("workspaces", {
-	id: columnId,
+	id: uuid().default(sql`'f93bd2db-d9ef-4d8e-a4f6-950aadf24d79'`).primaryKey().notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow(),
 	workspaceOwner: uuid("workspace_owner").notNull(),
 	title: text().notNull(),
@@ -23,12 +19,12 @@ export const workspaces = pgTable("workspaces", {
 });
 
 export const users = pgTable("users", {
-	id: columnId,
-	fullName: text("full_name").notNull(),
+	id: uuid().primaryKey().notNull(),
+	fullName: text("full_name"),
 	avatarUrl: text("avatar_url"),
 	billingAddress: jsonb("billing_address"),
 	paymentMethod: jsonb("payment_method"),
-	email: text().notNull(),
+	email: text(),
 	updatedat: timestamp({ withTimezone: true, mode: 'string' }),
 }, (table) => [
 	foreignKey({
@@ -41,7 +37,7 @@ export const users = pgTable("users", {
 ]);
 
 export const customers = pgTable("customers", {
-	id: columnId,
+	id: uuid().primaryKey().notNull(),
 	stripeCustomerId: text("stripe_customer_id"),
 }, (table) => [
 	foreignKey({
@@ -52,7 +48,7 @@ export const customers = pgTable("customers", {
 ]);
 
 export const products = pgTable("products", {
-	id: columnId,
+	id: text().primaryKey().notNull(),
 	active: boolean(),
 	name: text(),
 	description: text(),
@@ -63,8 +59,8 @@ export const products = pgTable("products", {
 ]);
 
 export const prices = pgTable("prices", {
-	id: columnId,
-	productId: uuid("product_id").notNull(),
+	id: text().primaryKey().notNull(),
+	productId: text("product_id"),
 	active: boolean(),
 	description: text(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
@@ -86,11 +82,11 @@ export const prices = pgTable("prices", {
 ]);
 
 export const subscriptions = pgTable("subscriptions", {
-	id: columnId,
+	id: text().primaryKey().notNull(),
 	userId: uuid("user_id").notNull(),
 	status: subscriptionStatus(),
 	metadata: jsonb(),
-	priceId: uuid("price_id").notNull(),
+	priceId: text("price_id"),
 	quantity: integer(),
 	cancelAtPeriodEnd: boolean("cancel_at_period_end"),
 	created: timestamp({ withTimezone: true, mode: 'string' }).default(sql`timezone('utc'::text, now())`).notNull(),
@@ -114,81 +110,3 @@ export const subscriptions = pgTable("subscriptions", {
 		}),
 	pgPolicy("Can only view own subs data.", { as: "permissive", for: "select", to: ["public"], using: sql`(( SELECT auth.uid() AS uid) = user_id)` }),
 ]);
-
-export const pricesRelations = relations(prices, ({one, many}) => ({
-	product: one(products, {
-		fields: [prices.productId],
-		references: [products.id]
-	}),
-	subscriptions: many(subscriptions),
-}));
-
-export const productsRelations = relations(products, ({many}) => ({
-	prices: many(prices),
-}));
-
-export const subscriptionsRelations = relations(subscriptions, ({one}) => ({
-	price: one(prices, {
-		fields: [subscriptions.priceId],
-		references: [prices.id]
-	}),
-}));
-
-// end flow 
-
-  export const workspacesRelations= relations(workspaces, ({many}) => ({
-    folders: many(folders)
-  }))
-
-  export const folders = pgTable('folders', {
-    id: columnId,
-    createdAt: createdAt,
-    title: text('title').notNull(),
-    iconId: text('icon_id').notNull(),
-    data: text('data'),
-    inTrash: text('in_trash'),
-    bannerUrl: text('banner_url'),
-    workspaceId: uuid('workspace_id')
-      .notNull()
-      .references(() => workspaces.id, {
-        onDelete: 'cascade',
-      }),
-  });
-
-  export const foldersRelations = relations(folders, ({ one }) => ({
-    workspace: one(workspaces, {
-      fields: [folders.workspaceId],
-      references: [workspaces.id],
-    })
-  }));
-
-  export const files = pgTable('files', {
-    id: columnId,
-    createdAt: createdAt,
-    title: text('title').notNull(),
-    iconId: text('icon_id').notNull(),
-    data: text('data'),
-    inTrash: text('in_trash'),
-    bannerUrl: text('banner_url'),
-    workspaceId: uuid('workspace_id')
-      .notNull()
-      .references(() => workspaces.id, {
-        onDelete: 'cascade',
-      }),
-    folderId: uuid('folder_id')
-      .notNull()
-      .references(() => folders.id, {
-        onDelete: 'cascade',
-      }),
-  });
-
-  export const filesRelations = relations(files, ({ one }) => ({
-    workspace: one(workspaces, {
-      fields: [files.workspaceId],
-      references: [workspaces.id],
-    }),
-    folder: one(folders, {
-      fields: [files.folderId],
-      references: [folders.id],
-    })
-  }));

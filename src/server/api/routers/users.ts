@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { publicProcedure, router } from "../../trpc";
 import { db } from "@/db";
-import { users } from "@/db/schema";
+import { users } from "@/db/schema"; 
 import { eq } from "drizzle-orm";
 
 export const usersRouter = router({
@@ -41,15 +41,11 @@ export const usersRouter = router({
         if (existingUser.length > 0) {
           throw new Error("El correo electrónico ya está en uso");
         }
-
-        const result = await db
-          .insert(users)
-          .values({
-            name:input.name,
-            email: input.email
-          })
-          .returning();
-
+        const result = await db.insert(users).values({
+          fullName: input.name,
+          email: input.email
+        })
+        .returning();
         return result[0];
       } catch (error) {
         console.error("Error al crear usuario:", error);

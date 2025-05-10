@@ -116,7 +116,7 @@ export default function Page() {
             <ul>
               {users?.map((user) => (
                 <li key={user.id} className="mb-2">
-                  {user.name} ({user.email})
+                  {user.fullName} ({user.email})
                 </li>
               ))}
             </ul>
