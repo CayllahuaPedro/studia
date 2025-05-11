@@ -15,12 +15,12 @@ const TitleSection: React.FC<TitleSectionProps> = ({
 }) => {
   return (
     <section className="flex flex-col items-start justify-center gap-2 md:items-center">
-      <article className="rounded-full p-[1px] text-sm dark:bg-gradient-to-r dark:from-brand-primaryBlue dark:to-brand-primaryPurple">
+      <article className="rounded-full mb-2 p-[1px] text-sm dark:bg-gradient-to-r dark:from-brand-primaryBlue dark:to-brand-primaryPurple">
         <div className="rounded-full px-3 py-3 dark:bg-black">{pill}</div>
       </article>
       {subheading ? (
         <>
-          <h2 className="text-left text-3xl font-semibold text-purple-500 sm:text-5xl md:text-center">
+          <h2 className="text-left text-3xl font-semibold sm:text-5xl md:text-center">
             {title} <span className="text-shadow-brand-primaryPurple">{highlighted}</span>
           </h2>
           <p className="sm:w-max-[450px] md:text-center dark:text-washed-purple-700">
@@ -28,8 +28,8 @@ const TitleSection: React.FC<TitleSectionProps> = ({
           </p>
         </>
       ) : (
-        <h1 className="text-left text-4xl font-semibold text-purple-300 sm:max-w-[850px] sm:text-6xl md:text-center">
-          {title} <span className="text-purple-400">{highlighted}</span>
+        <h1 className="text-left text-4xl font-semibold sm:max-w-[850px] sm:text-6xl md:text-center">
+          {title} <span className="text-shadow-brand-primaryPurple">{highlighted}</span>
         </h1>
       )}
     </section>

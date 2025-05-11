@@ -3,6 +3,7 @@ import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
+import { Sparkles } from "./sparkle"
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
@@ -20,6 +21,9 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
+        gradient: "bg-gradient-to-r from-brand-primaryBlue to-brand-primaryPurple",
+        sparkle: "bg-secondary text-secondary-foreground relative overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 after:absolute after:inset-0 after:z-[-1] after:opacity-0 after:transition-opacity hover:after:opacity-100 after:bg-[radial-gradient(circle, var(--color-primary-purple-300) 0%, transparent 70%)] after:blur-xl after:animate-pulse",
+        gradientSparkle: "bg-gradient-to-r from-brand-primaryBlue to-brand-primaryPurple text-white relative overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary-purple-500/30 after:absolute after:inset-0 after:z-[-1] after:opacity-0 after:transition-opacity hover:after:opacity-100 after:bg-[radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%)] after:blur-xl after:animate-pulse"
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
@@ -46,7 +50,6 @@ function Button({
     asChild?: boolean
   }) {
   const Comp = asChild ? Slot : "button"
-
   return (
     <Comp
       data-slot="button"
